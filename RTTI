@@ -1,0 +1,30 @@
+RTTI: Runtime Type Identification
+RTTI有两种：
+1.“传统”的RTTI，它假定我们在编译时就知道了所有的类型；
+2.反射机制，它允许我们在运行时发现和使用类的信息。
+
+类型信息在运行时如何表示？
+答案是Class对象（Class object），它包含了与类有关的信息。事实上，Class object就是用来创建类的所有“常规”对象的。
+每个Class都有一个Class object，每当编译了一个新的类，就会有一个Class object被保存在Class同名的.class文件中。
+
+谁生成这个类的对象？（毕竟这是Class的Class object，肯定不会用一个Class来new Class）
+答案是类加载器（Class Loader）。JVM使用一种称为Class Loaderd的子系统来生成这个Class object。
+
+Class Loader系统包含一条类加载链，最顶端的是原生加载器（Native Class Loader），它是JVM实现的一部分。
+原生类加载器加载的是所谓的可信类，它们通常是从本地盘加载的。
+
+所有的类都是在对其第一次使用时，动态加载到JVM中的。什么是“第一次使用”？——当程序第一次访问类的static field时（包括构造器）。
+也因此，类并不是在运行之前就完全被加载，而是在必要时动态加载的。（但是在运行之前肯定都被编译了。）
+
+Class Loader如何加载一个类的Class object？
+1.Class Loader首先检查这个class的Class object是否已经被加载了。
+2.若尚未加载，默认的加载器就会根据类名查找其.class文件（这个时候若找不到会throw ClassNotFoundException）。
+在这个类的字节码被加载时，它们会接受验证，以确保其没有被破坏，并且不包含不良Java代码。
+3.一旦某个类的Class object被加载如内存，它就被用来创建这个类的所有对象。
+
+Class的static method: Class.forName()介绍
+Class.forName()有三个重载，这里说的是forName(String classname)，这个method返回Class object的引用。它还有个副作用：如果这个类未加载，则加载这个类。
+这里不需要拥有这个Class的对象就可以通过forName method得到这个Class的Class object。
+
+还有一种是通过一个Class的object来得到这个Class的Class object: .getClass()
+此方法属于Object。
