@@ -1,0 +1,22 @@
+Reflection/Reflect
+RTTI(Runtime Type Identification)更像是一种判断，通过RTTI可以在运行时判断一个对象是否是一种类型？这个类型必须在编译时就是已知的。
+初看这是显而易见的，但是当涉及远程方法调用（RMI），分布式计算，基于快速应用开发（RAD）的应用构建工具，即集成开发环境（IDE）等。就会发现不足。
+Class类和java.lang.reflect中的类库一起支持了reflect的概念。该类库包括Filed、Method以及Constructor类（每个类都实现了Member接口）。
+这些类型的对象是由JVM在运行时创建的，用以表示未知类里对应的成员。
+重要的是，要认识到反射机制与RTTI的相同与不同之处。
+当通过reflect与一个其类型未知的对象打交道时，JVM只是简单地检查这个对象，看它属于哪个特定地类（就像RTTI那样）。
+在用它做其他事情之前必须先加载那个类（class）的Class object。也正因此，那个类（class）的Class object必须是可获取的——无论是在本地机器上；还是在网络上。
+所以reflect与RTTI的本质区别在于：
+对RTTI来说，编译器（compiler）在编译时打开和检查.class文件（一如其他其他所有常规的类打开方式）。
+而对于reflect来说，.class文件在编译时无法获取，所以是在运行时打开和检查.class文件。
+
+当我们浏览一个类定义的源代码或者JDK文档时，我们只能看到在这个类定义中定义的或被覆盖的方法，而无法发现继承自基类的方法。
+而通过reflect的类方法提取器可以实现。
+看这样一段语句：
+Class<?> cls = Class.forName(agrs[0]);
+Method[] methods = cls.getMethods();
+Constructor<?>[] constructors = cls.getConstructors();
+其中：
+Method[] getMethods() throws SecurityException
+Constructor<?>[] getConstructors() throws SecurityException 
+这里就用到了反射的机制。
