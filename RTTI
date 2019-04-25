@@ -24,7 +24,59 @@ Class Loader如何加载一个类的Class object？
 
 Class的static method: Class.forName()介绍
 Class.forName()有三个重载，这里说的是forName(String classname)，这个method返回Class object的引用。它还有个副作用：如果这个类未加载，则加载这个类。
-这里不需要拥有这个Class的对象就可以通过forName method得到这个Class的Class object。
+这里不需要拥有这个Class的对象就可以通过forName method得到这个Class的Class object。这里也可以得到interface的Class object的引用。
+注意这里的classname是class的全限定名，即要包括包（packet）的名字。
 
 还有一种是通过一个Class的object来得到这个Class的Class object: .getClass()
 此方法属于Object。
+
+String getName(): 返回一个Class object的class或interface或array class或primitive type或void的全限定“类”名
+如果这个class是class或interface，则返回其全限定名，如java.lang.String
+如果这个class是primitive type或void，则返回名字，如byte，void
+如果这个class是class of array，则内部包含element的全限定名，外部加个[，符号如下：
+Element Type	Encoding
+boolean      	Z
+byte	        B
+char	        C
+class or interface	Lclassname
+double	      D
+float       	F
+int	          I
+long	        J
+short       	S
+如：Object[3]的全限定名：[Ljava.lang.Object
+而int[3][4][5][6][7][8][9]的全限定名：[[[[[[[I
+
+String getSimpleName()
+String getCanonicalName()
+classObject.newInstance()被不建议使用，现在建议为：classObject.getDeclaredConstructor().newInstance()
+
+类字面常量（Class Literal）
+Java提供了另一种方法来生成对Class object的引用——使用Class Literal。
+这个做法相比于前者更简单，更安全，更高效。
+比如对于一个objec，其Class object为：Object.class。
+这里有一点与forName() method不同的是，使用Class Literal创建Class object的引用不会自动的初始化该Class object对象。
+
+这里我们看为了第一次使用一个类（class）而做的准备：
+1.加载（load），这是由类加载器（class loader）执行的。查找字节码，并从中创建Class object。
+2.链接（link），验证类中的字节码，为static field分配存储空间，若必须的话，解析这个类创建的对其他类的所有引用。
+3.初始化（initialize），若该类具有super class，则对其初始化，执行static初始化器和static初始化块。
+
+泛型（Generics）
+Class支持泛型，如：Class<Integer> intClass = int.class;而且最好像Collection类一样，无时无刻都要带上泛型！
+与Collection类一样，这里有个注意：Class<Number> intClass = int.class;这条语句是错的。
+因为尽管Integer是Number的子类，但是Integer Class不是Number Class的子类！
+应该这样：Class<? extends Number> intClass = int.class;
+
+RTTI小结
+迄今为止，我们已知的RTTI有：
+1.最传统的类型转换，如：
+Number n = new Integer(1);
+(Integer) n;
+若出错，则throw ClassCastException.
+2.Class object，通过查询Class object可知运行时所需的信息。
+3.instance of，常见用法为：
+if(x instanceof ArrayList)
+  ((ArrayList) x).add(i);
+
+boolean isInstance(Object obj)是instanceof的运行时的动态等价方法。
