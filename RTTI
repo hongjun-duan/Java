@@ -20,7 +20,7 @@ Class Loader如何加载一个类的Class object？
 1.Class Loader首先检查这个class的Class object是否已经被加载了。
 2.若尚未加载，默认的加载器就会根据类名查找其.class文件（这个时候若找不到会throw ClassNotFoundException）。
 在这个类的字节码被加载时，它们会接受验证，以确保其没有被破坏，并且不包含不良Java代码。
-3.一旦某个类的Class object被加载如内存，它就被用来创建这个类的所有对象。
+3.一旦某个类的Class object被加载进内存，它就被用来创建这个类的所有对象。
 
 Class的static method: Class.forName()介绍
 Class.forName()有三个重载，这里说的是forName(String classname)，这个method返回Class object的引用。它还有个副作用：如果这个类未加载，则加载这个类。
