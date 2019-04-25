@@ -11,9 +11,16 @@ RTTI有两种：
 答案是类加载器（Class Loader）。JVM使用一种称为Class Loaderd的子系统来生成这个Class object。
 
 Class Loader系统包含一条类加载链，最顶端的是原生加载器（Native Class Loader），它是JVM实现的一部分。
+JVM提供的Class Loader是系统Class Loader，开发者也可以通过继承ClassLoader类来创建自己的Class Loader。
 原生类加载器加载的是所谓的可信类，它们通常是从本地盘加载的。
+Class Loader加载类要从.class文件加载，这些二进制数据有以下来源：
+1.从本地文件加载.class文件
+2.从JAR包中加载直接加载
+3.通过网络获得数据来源
+4.动态编译，运行时执行加载
 
-所有的类都是在对其第一次使用时，动态加载到JVM中的。什么是“第一次使用”？——当程序第一次访问类的static field时（包括构造器）。
+
+很多类都是在对其第一次使用时，动态加载到JVM中的。什么是“第一次使用”？——当程序第一次访问类的static field时（包括构造器）。
 也因此，类并不是在运行之前就完全被加载，而是在必要时动态加载的。（但是在运行之前肯定都被编译了。）
 
 Class Loader如何加载一个类的Class object？
@@ -60,7 +67,14 @@ Java提供了另一种方法来生成对Class object的引用——使用Class L
 这里我们看为了第一次使用一个类（class）而做的准备：
 1.加载（load），这是由类加载器（class loader）执行的。查找字节码，并从中创建Class object。
 2.链接（link），验证类中的字节码，为static field分配存储空间，若必须的话，解析这个类创建的对其他类的所有引用。
-3.初始化（initialize），若该类具有super class，则对其初始化，执行static初始化器和static初始化块。
+3.初始化（initialize）：如发现一个class未load和link，先load和link这个类；
+                       若该类具有super class，则递归初始化（注意要是有class未load和link的话要先load和link）；
+                       初始化static field的语句（若有的话），执行static初始化器和static初始化块。
+
+这里我们看链接（Link）阶段，Link阶段负责把类的二进制数据合并到JRE中：
+1.验证：验证被加载的类是否有正确的内部结构，并和其它类协调一致
+2.准备：负责为类的static field分配内存，并设置默认初始值
+3.解析：将类的二进制数据中的符号引用替换成直接引用
 
 泛型（Generics）
 Class支持泛型，如：Class<Integer> intClass = int.class;而且最好像Collection类一样，无时无刻都要带上泛型！
