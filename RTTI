@@ -19,14 +19,33 @@ Class Loader加载类要从.class文件加载，这些二进制数据有以下�
 3.通过网络获得数据来源
 4.动态编译，运行时执行加载
 
+Class Loader系统是一条类加载链：
+1.链的顶端是Bootstrap ClassLoader（根类加载器，或引导类加载器或原生类加载器），它负责加载Java的核心类。
+2.Extension ClassLoader（扩展类加载器）
+3.System ClassLoader（系统类加载器）
+4.用户加载器
+注意的是这些加载器从上到下为父子关系，但不是类继承的父子关系，而是Class Loader的instance之间的父子关系。
+
+JVM的类加载机制有三种：
+1.全盘负责
+2.父类委托
+3.缓存机制
 
 很多类都是在对其第一次使用时，动态加载到JVM中的。什么是“第一次使用”？——当程序第一次访问类的static field时（包括构造器）。
-也因此，类并不是在运行之前就完全被加载，而是在必要时动态加载的。（但是在运行之前肯定都被编译了。）
+也因此，类并不是在运行之前就完全被加载，而是在必要时动态加载的。（但是在运行之前肯定都被编译了。） 
+这里有个问题，因为一个类只会被加载一次（即一个类只会有一个Class object在内存中），那么我们如何判断两个类是不是同一个类？
+正如对象有一个唯一标识符一样，一个类也有唯一标识符：
+在Java中，一个类用其全限定类名（包名+类名）作为标志；
+在JVM中。一个类用其全限定类名和其Class Loader作为标识。
 
 Class Loader如何加载一个类的Class object？
 1.Class Loader首先检查这个class的Class object是否已经被加载了。
-2.若尚未加载，默认的加载器就会根据类名查找其.class文件（这个时候若找不到会throw ClassNotFoundException）。
-在这个类的字节码被加载时，它们会接受验证，以确保其没有被破坏，并且不包含不良Java代码。
+2.若尚未加载，判断父类Class Loader是否存在？
+    如果不存在，意味着要么本身是Bootstrap ClassLoader，要么其父类一定是Bootstap ClassLoader，这时使用Bootstrap ClassLoader加载目标类；
+    如果存在，则使用父类Class Loader加载；
+        若未成功加载，则使用当前Class Loader尝试寻找Class文件（从与此Class Loader相关的路径寻找）；
+            若找到则从文件中载入Class。
+    然后加载器就会根据类名查找其.class文件（这个时候若找不到会throw ClassNotFoundException）。
 3.一旦某个类的Class object被加载进内存，它就被用来创建这个类的所有对象。
 
 Class的static method: Class.forName()介绍
