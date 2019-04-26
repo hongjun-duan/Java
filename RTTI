@@ -41,7 +41,7 @@ JVM的类加载机制有三种：
 Class Loader如何加载一个类的Class object？
 1.Class Loader首先检查这个class的Class object是否已经被加载了。
 2.若尚未加载，判断父类Class Loader是否存在？
-    如果不存在，意味着要么本身是Bootstrap ClassLoader，要么其父类一定是Bootstap ClassLoader，这时使用Bootstrap ClassLoader加载目标类；
+    如果不存在，意味着要么本身是Bootstrap ClassLoader，要么其父类一定是Bootstrap ClassLoader，这时使用Bootstrap ClassLoader加载目标类；
     如果存在，则使用父类Class Loader加载；
         若未成功加载，则使用当前Class Loader尝试寻找Class文件（从与此Class Loader相关的路径寻找）；
             若找到则从文件中载入Class。
