@@ -39,3 +39,11 @@ ClassLoader getParent()：返回该Class Loader的父类Class Loader。
 final void resolveClass(Class<?> c)：链接指定的类
 
 final Class<?> findLoadedClass(String name)：如果此JVM已load该类，则直接返回该类的Class object，否则返回null。
+
+URLClassLoader类
+ClassLoader<--SecureClassLoader<--URLClassLoader，这是URLClassLoader的继承关系。
+并且SystemClassLoader和ExtensionClassLoader就是从URLClassLoader类继承而来。
+URLClassLoader类功能强大，它既可以从本地文件系统获得二进制文件来加载类，也可以从远程主机获得二进制文件来加载类。
+URLClassLoader的constructor:
+URLClassLoader(URL[] urls):使用默认的父类加载器创建一个ClassLoader对象，该对象将从urls所指定的系列路径来查询并加载类；
+URLClassLoader(URL[] urls, ClassLoader parent):使用指定的父类加载器创建一个ClassLoader对象，该对象将从urls所指定的系列路径来查询并加载类。
