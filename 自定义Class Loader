@@ -1,0 +1,41 @@
+JVM中除了Bootstrap ClassLoader外的所有ClassLoader都是ClasslLoader子类的instance。
+因此可以通过重写ClassLoader中的protected methods来实现自定义ClassLoader。
+
+ClassLoder类有两个关键的method:
+protected Class<?> loadClass(String name, boolean resolve)：该方法为ClassLoader的入口，系统就是调用该方法来获取指定类对应的Class object的。
+name为指定类名，resolve为真时会调用resolveClass(Class)产生Class object。
+
+loadClass()的执行顺序如下：
+1.调用findLoadedClass(String)来检查这个类是否已被加载？
+2.调用父类加载器上的loadClass()——这里是递归的，如果父类加载器为null，则调用Rootstrap ClassLoader。
+3.调用findClass(String)查找这个类。
+
+这里回想Class Loader的执行顺序：
+1.Class Loader首先检查这个class的Class object是否已经被加载了。
+2.若尚未加载，判断父类Class Loader是否存在？
+    如果不存在，意味着要么本身是Bootstrap ClassLoader，要么其父类一定是Bootstrap ClassLoader，这时使用Bootstrap ClassLoader加载目标类；
+    如果存在，则使用父类Class Loader加载；
+        若未成功加载，则使用当前Class Loader尝试寻找Class文件（从与此Class Loader相关的路径寻找）；
+            若找到则从文件中载入Class。
+    然后加载器就会根据类名查找其.class文件（这个时候若找不到会throw ClassNotFoundException）。
+3.一旦某个类的Class object被加载进内存，它就被用来创建这个类的所有对象。
+
+这里：
+protected Class<?> finfClass(String name)：根据类名来查找类。
+
+通常推荐重写findClass()而不是重写loadClass()。这样不会破坏父类委托和缓冲机制这两种策略。
+
+ClassLoader methods:
+protected final Class<?> defineClass(String name, byte[] b, int off, int len) throws ClassFormatError
+该方法将指定类的字节码文件（typically .class文件）读入byte[] b中，并转化为Class object。这里可以用于反射(reflect)。
+
+protected final Class<?> findSystemClass(String name) throws ClassNotFoundException
+从本地文件系统载入文件，如果存在就使用defineClass()方法将原始字节转换成Class object。
+
+static getSystemClassLoader()：返回System ClassLoader
+
+ClassLoader getParent()：返回该Class Loader的父类Class Loader。
+
+final void resolveClass(Class<?> c)：链接指定的类
+
+final Class<?> findLoadedClass(String name)：如果此JVM已load该类，则直接返回该类的Class object，否则返回null。
