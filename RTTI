@@ -114,3 +114,11 @@ if(x instanceof ArrayList)
   ((ArrayList) x).add(i);
 
 boolean isInstance(Object obj)是instanceof的运行时的动态等价方法。
+
+总结Java中可以获得Class object的方法：
+1.Class.forName(String className)
+2.class属性，例如Integer.class
+3.对象调用getClass()方法，例如new ArrayList<Integer>().getClass()
+第二种方法最好。
+
+
