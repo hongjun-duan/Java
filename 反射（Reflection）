@@ -20,3 +20,22 @@ Constructor<?>[] constructors = cls.getConstructors();
 Method[] getMethods() throws SecurityException
 Constructor<?>[] getConstructors() throws SecurityException 
 这里就用到了反射的机制。
+
+从一个Class object可以获得这个类的一切信息：
+1.Constructor
+2.Method
+3.Field
+4.Annotation
+5.Class(inner class)
+Java8新增了Executable类：Executable<--Constructor, Method。
+6.Parameter，Java8新增
+
+要知道一个重要的interface Member<--Executable, Constructor, Method, Field
+
+通过Class object知道一个类的Member之后，就可以执行Method, 通过Constructor创建instance, 访问Field等等
+
+
+
+
+
+
