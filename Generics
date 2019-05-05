@@ -1,0 +1,31 @@
+Generics: parameterized type
+Generics的重要应用之一就是容器类，或持有对象。
+Generics可以指定容器类中持有什么类型的对象，并在compile时保证正确性。
+使用Generics的核心概念：告诉compiler想使用什么类型，compiler帮助我们处理一切细节。
+Stack的generics实现：
+class Stack<T> {
+    private class Node<U> {
+        U item;
+        Node<U> next;
+        Node() {
+            item = null;
+            next = null;
+        }
+        Node(U item, Node<U> next) {
+            this.item = item;
+            this.next = next;
+        }
+        boolean end() {
+            return item == null && next == null;
+        }
+    }
+    private Node<T> top = new Node<>();
+    public void push(T item) {
+        top = new Node<T>(item, top);
+    }
+    public T pop() {
+        T result = top.item;
+        if(!top.end()) top = top.next;
+        return result;
+    }
+}
