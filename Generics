@@ -2,6 +2,8 @@ Generics: parameterized type
 Generics的重要应用之一就是容器类，或持有对象。
 Generics可以指定容器类中持有什么类型的对象，并在compile时保证正确性。
 使用Generics的核心概念：告诉compiler想使用什么类型，compiler帮助我们处理一切细节。
+
+1.generics的容器typical实现:
 Stack的generics实现：
 class Stack<T> {
     private class Node<U> {
@@ -29,3 +31,12 @@ class Stack<T> {
         return result;
     }
 }
+
+2.generics的生成器（generator）应用
+generator是一种专门创建对象的，属于工厂方法设计模式。
+一般的：interface Generator<T> {T next();}
+
+3.generics的适配器（adapter）应用
+
+generics method
+generics method是泛型的另一个重大作用。
